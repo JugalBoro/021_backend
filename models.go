@@ -6,8 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// Entities representing database tables
-
 type User struct {
 	ID        int64     `db:"id" json:"id"`
 	Name      string    `db:"name" json:"name"`
@@ -60,8 +58,6 @@ type JournalPosting struct {
 	AssetType      string    `db:"asset_type" json:"asset_type"`
 	StockSymbol    *string   `db:"stock_symbol" json:"stock_symbol,omitempty"`
 }
-
-// Data Transfer Objects (DTOs) for API
 
 type CreateRewardRequest struct {
 	UserID      int64   `json:"user_id" binding:"required"`

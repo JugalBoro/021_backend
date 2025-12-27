@@ -36,7 +36,6 @@ func UpdatePrices() {
 }
 
 func GetCurrentPrice(symbol string) (float64, error) {
-	// Mock implementation
 	rand.Seed(time.Now().UnixNano())
 	return 1000 + rand.Float64()*(3000-1000), nil
 }

@@ -31,7 +31,7 @@ func CreateReward(req CreateRewardRequest, price float64) error {
 	}
 	defer tx.Rollback()
 
-	// Idempotency Check
+	// Idempotency
 	var exists int
 	err = tx.Get(&exists, "SELECT count(*) FROM rewards WHERE reference_id = $1", req.ReferenceID)
 	if err != nil {
@@ -41,7 +41,6 @@ func CreateReward(req CreateRewardRequest, price float64) error {
 		return fmt.Errorf("duplicate reward reference")
 	}
 
-	// Insert Reward
 	rewardID := uuid.New()
 	_, err = tx.Exec(`
 		INSERT INTO rewards (id, user_id, stock_symbol, quantity, reference_id, awarded_at)
@@ -51,7 +50,6 @@ func CreateReward(req CreateRewardRequest, price float64) error {
 		return err
 	}
 
-	// Ledger Posting Logic
 	totalValue := price * req.Quantity
 	brokerage := totalValue * 0.01
 	totalCashOut := totalValue + brokerage
