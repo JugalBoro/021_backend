@@ -41,6 +41,22 @@ func CreateReward(req CreateRewardRequest, price float64) error {
 		return fmt.Errorf("duplicate reward reference")
 	}
 
+	// User Check: Auto-create if not exists (for testing flexibility)
+	var userExists int
+	err = tx.Get(&userExists, "SELECT count(*) FROM users WHERE id = $1", req.UserID)
+	if err != nil {
+		return err
+	}
+	if userExists == 0 {
+		_, err = tx.Exec(`
+			INSERT INTO users (id, name, email) 
+			VALUES ($1, $2, $3)
+		`, req.UserID, fmt.Sprintf("User %d", req.UserID), fmt.Sprintf("user%d@stocky.com", req.UserID))
+		if err != nil {
+			return fmt.Errorf("failed to auto-create user: %v", err)
+		}
+	}
+
 	rewardID := uuid.New()
 	_, err = tx.Exec(`
 		INSERT INTO rewards (id, user_id, stock_symbol, quantity, reference_id, awarded_at)
