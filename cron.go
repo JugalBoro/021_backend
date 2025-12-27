@@ -1,5 +1,6 @@
 package main
 
+//test 1
 import (
 	"math/rand"
 	"time"
