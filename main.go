@@ -16,12 +16,16 @@ func main() {
 		logrus.Warn("Error loading .env file, using system environment variables")
 	}
 
-	dbHost := getEnv("DB_HOST", "localhost")
-	dbPort := getEnv("DB_PORT", "5432")
-	dbUser := getEnv("DB_USER", "postgres")
-	dbPassword := getEnv("DB_PASSWORD", "postgres")
-	dbName := getEnv("DB_NAME", "assignment")
-	serverPort := getEnv("PORT", "8080")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+	serverPort := os.Getenv("PORT")
+
+	if dbHost == "" || dbPort == "" || dbUser == "" || dbPassword == "" || dbName == "" || serverPort == "" {
+		logrus.Fatal("Missing required environment variables")
+	}
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		dbHost, dbPort, dbUser, dbPassword, dbName)
@@ -53,11 +57,4 @@ func main() {
 	if err := r.Run(":" + serverPort); err != nil {
 		logrus.Fatalf("Failed to start server: %v", err)
 	}
-}
-
-func getEnv(key, fallback string) string {
-	if value, ok := os.LookupEnv(key); ok {
-		return value
-	}
-	return fallback
 }

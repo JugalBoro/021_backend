@@ -135,7 +135,7 @@ func GetUserStats(userID int64) (*UserStatsResponse, error) {
 func GetHistoricalPortfolio(userID int64) ([]map[string]interface{}, error) {
 	query := `
 		WITH dates AS (
-			SELECT generate_series(current_date - interval '30 days', current_date - interval '1 day', '1 day')::date AS day
+			SELECT generate_series(current_date - interval '30 days', current_date, '1 day')::date AS day
 		),
 		daily_holdings AS (
 			SELECT d.day, r.stock_symbol, SUM(r.quantity) as cum_qty
